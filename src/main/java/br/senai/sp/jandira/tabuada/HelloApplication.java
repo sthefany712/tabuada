@@ -1,18 +1,19 @@
 package br.senai.sp.jandira.tabuada;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.Optional;
 
 public class HelloApplication extends Application {
     TextField textFieldMultiplicando; //Declaramos essa variável tornando-a global, para que eu a acesse de todo lugar.
@@ -24,8 +25,19 @@ public class HelloApplication extends Application {
     public void start(Stage stage) throws IOException {
 
         // Definir o tamanho da tela (stage)
-        stage.setWidth(500);
-        stage.setHeight(500);
+        //stage.setWidth(500); //comentando se em caixa no tamanho do que tem na tela
+        stage.setHeight(600);
+
+        // Controlando o fechamento ao clicar no fechar da janela (X)
+        stage.setOnCloseRequest(e -> {
+            fechar();
+            e.consume();
+        }); //esse E guarda o evento que esta sendo disparado. Ele é uma variavel e eu poderia usar qualquer nome
+
+
+
+        //Bloquear o redirecionamento da janela
+        stage.setResizable(false); //no padrão ele é true, deixado false o úsario não consegue mexer a tela
 
         // Componente principal da tela (raiz)
         VBox root = new VBox(); //root: Vbox
@@ -49,6 +61,9 @@ public class HelloApplication extends Application {
 
         // Criar o multiplicando
         GridPane gridFormulario = new GridPane();
+        gridFormulario.setPadding(new Insets(20)); //MARGEM
+        gridFormulario.setVgap(10); //ESPAÇO VERTICAL, por isso, Vgap
+        gridFormulario.setHgap(10); //ESPAÇO HORIZONTAL, por isso, Horizontal
         Label labelMultiplicando = new Label("Multiplicando");
         textFieldMultiplicando = new TextField(); //inicializando a variavel
 
@@ -67,24 +82,37 @@ public class HelloApplication extends Application {
 
         // Criar a caixa de botões
         HBox boxBotoes = new HBox();
+        boxBotoes.setAlignment(Pos.CENTER_RIGHT);
+        boxBotoes.setPadding(new Insets(0,20,20,20));
+        boxBotoes.setSpacing(10); //COLOCAR BOXBOTOES
         Button btnCalcular = new Button("Calcular"); //além de mostrar o texto tem que receber oq for digitado
+        btnCalcular.setPrefHeight(90);
+        btnCalcular.setOnAction(event -> {});
         btnCalcular.setOnAction(e -> {
            calcularTabuada();
-
         });
 
         Button btnLimpar = new Button("Limpar");
+        btnLimpar.setPrefHeight(70);
+        btnLimpar.setOnAction(event -> {});
         btnLimpar.setOnAction(e -> {
-            listaTabuada.getItems().clear();
+            limparFormulario();
         });
 
         Button btnSair = new Button("Sair");
+        btnSair.setPrefHeight(70);
+        btnSair.setOnAction(event -> {});
+        btnSair.setOnAction(e -> {
+            fechar();
+            e.consume(); //abandone/esquece oq eu coloquei
+        });
 
         // Adicionar os botões na boxBotões
         boxBotoes.getChildren().addAll(btnCalcular, btnLimpar, btnSair);
 
         // Adicionar um componente ListView
         VBox boxResultado = new VBox();
+        boxResultado.setPadding(new Insets(0,20,20,20));
         Label labelResultado= new Label("Resultados");
         labelResultado.setStyle("-fx-text-fill: blue;-fx-font-size: 18; -fx-font-weight: bold;");
 
@@ -104,6 +132,31 @@ public class HelloApplication extends Application {
         stage.show();
     }
 
+    public void limparFormulario(){
+        textFieldMultiplicando.setText("");
+        textFieldMenorMultiplicador.setText("");
+        textFieldMaiorMultiplicador.setText("");
+        listaTabuada.getItems().clear();
+        textFieldMultiplicando.requestFocus();
+    }
+
+    public void fechar(){
+
+        Alert alertFechar = new Alert
+                (Alert.AlertType.CONFIRMATION,
+                        "Confirma a saída do sistema?",
+                        ButtonType.YES,
+                        ButtonType.NO
+                ); //Alert: tela //Confirmation: sim/não
+               Optional<ButtonType> resposta = alertFechar.showAndWait(); //objeto Option
+
+                if (resposta.isPresent() && resposta.get() == ButtonType.YES) {
+                    Platform.exit();
+                }
+
+
+    }
+
     public void calcularTabuada(){
 
         int multiplicando = Integer.parseInt(textFieldMultiplicando.getText()); //text..recebe o texto e o parseInt pega uma String e transf em Int
@@ -116,7 +169,6 @@ public class HelloApplication extends Application {
             menorMultiplicador = maiorMultiplicador;
             maiorMultiplicador = auxiliar;
         }
-
         int tamanho = maiorMultiplicador - menorMultiplicador + 1; //+1 pois inicia c/ 0
         String[] tabuada = new String[tamanho];
 
@@ -130,7 +182,5 @@ public class HelloApplication extends Application {
 
         listaTabuada.getItems().clear();
         listaTabuada.getItems().addAll(tabuada);
-
     }
-
 }
