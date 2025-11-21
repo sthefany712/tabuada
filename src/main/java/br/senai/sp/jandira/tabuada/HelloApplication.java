@@ -87,21 +87,21 @@ public class HelloApplication extends Application {
         boxBotoes.setSpacing(10); //COLOCAR BOXBOTOES
         Button btnCalcular = new Button("Calcular"); //além de mostrar o texto tem que receber oq for digitado
         btnCalcular.setPrefHeight(90);
-        btnCalcular.setOnAction(event -> {});
+        //btnCalcular.setOnAction(event -> {});
         btnCalcular.setOnAction(e -> {
            calcularTabuada();
         });
 
         Button btnLimpar = new Button("Limpar");
         btnLimpar.setPrefHeight(70);
-        btnLimpar.setOnAction(event -> {});
+        //btnLimpar.setOnAction(event -> {});
         btnLimpar.setOnAction(e -> {
             limparFormulario();
         });
 
         Button btnSair = new Button("Sair");
         btnSair.setPrefHeight(70);
-        btnSair.setOnAction(event -> {});
+        //btnSair.setOnAction(event -> {});
         btnSair.setOnAction(e -> {
             fechar();
             e.consume(); //abandone/esquece oq eu coloquei
@@ -148,13 +148,11 @@ public class HelloApplication extends Application {
                         ButtonType.YES,
                         ButtonType.NO
                 ); //Alert: tela //Confirmation: sim/não
-               Optional<ButtonType> resposta = alertFechar.showAndWait(); //objeto Option
+        Optional<ButtonType> resposta = alertFechar.showAndWait(); //objeto Option
 
-                if (resposta.isPresent() && resposta.get() == ButtonType.YES) {
-                    Platform.exit();
-                }
-
-
+        if (resposta.isPresent() && resposta.get() == ButtonType.YES) {
+            Platform.exit();
+        }
     }
 
     public void calcularTabuada(){
